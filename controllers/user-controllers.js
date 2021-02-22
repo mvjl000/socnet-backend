@@ -4,10 +4,52 @@ const { validationResult } = require('express-validator');
 const HttpError = require('../models/http-error');
 const User = require('../models/user-model');
 
-exports.login = (req, res, next) => {
+exports.login = async (req, res, next) => {
   const { username, password } = req.body;
 
-  res.json({ message: 'Loggin in', username: username });
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ username: username });
+  } catch (err) {
+    const error = new HttpError(
+      'Logging in failed, please try again later.',
+      500
+    );
+    return next(error);
+  }
+
+  if (!existingUser) {
+    const error = new HttpError(
+      'Invalid credentials, could not log you in.',
+      403
+    );
+    return next(error);
+  }
+
+  let isPasswordValid;
+  try {
+    isPasswordValid = await bcrypt.compare(password, existingUser.password);
+  } catch (err) {
+    const error = new HttpError(
+      'Logging in failed, please try again later.',
+      500
+    );
+    return next(error);
+  }
+
+  if (!isPasswordValid) {
+    const error = new HttpError(
+      'Invalid credentials, could not log you in.',
+      403
+    );
+    return next(error);
+  }
+
+  res.json({
+    message: 'Loggin in',
+    username: username,
+    userId: existingUser.id,
+  });
 };
 
 exports.signup = async (req, res, next) => {
@@ -18,7 +60,7 @@ exports.signup = async (req, res, next) => {
     );
   }
 
-  const { username, password, repeatPassword } = req.body;
+  const { username, password } = req.body;
 
   let existingUser;
   try {
