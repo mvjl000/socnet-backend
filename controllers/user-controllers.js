@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator');
 
 const HttpError = require('../models/http-error');
 const User = require('../models/user-model');
@@ -10,6 +11,13 @@ exports.login = (req, res, next) => {
 };
 
 exports.signup = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError('Invalid credentials passed, please check your data.', 422)
+    );
+  }
+
   const { username, password, repeatPassword } = req.body;
 
   let existingUser;
@@ -28,14 +36,6 @@ exports.signup = async (req, res, next) => {
       'User exists already, please login instead.',
       422
     );
-    return next(error);
-  }
-
-  const areCredentialsValid =
-    username.length > 0 && password.length > 0 && password === repeatPassword;
-
-  if (!areCredentialsValid) {
-    const error = new HttpError('Invalid credentials.', 403);
     return next(error);
   }
 
