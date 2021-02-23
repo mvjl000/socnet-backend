@@ -55,9 +55,7 @@ exports.login = async (req, res, next) => {
 exports.signup = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(
-      new HttpError('Invalid credentials passed, please check your data.', 422)
-    );
+    return next(new HttpError('Invalid credentials passed.', 422));
   }
 
   const { username, password } = req.body;
