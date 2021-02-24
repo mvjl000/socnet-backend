@@ -93,6 +93,7 @@ exports.signup = async (req, res, next) => {
   const createdUser = new User({
     username,
     password: hashedPassword,
+    description: 'Here you can write something about you.',
   });
 
   try {
@@ -106,4 +107,59 @@ exports.signup = async (req, res, next) => {
   }
 
   res.status(201).json({ message: 'user created successfully', username });
+};
+
+exports.getUserData = async (req, res, next) => {
+  const userId = req.params.uid;
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, please try again later.',
+      500
+    );
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new HttpError('Could not find user with provided id.', 404);
+    return next(error);
+  }
+
+  res.status(200).json({ description: user.description });
+};
+
+exports.updateDescription = async (req, res, next) => {
+  const { description } = req.body;
+  const userId = req.params.uid;
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not update description.',
+      500
+    );
+    return next(error);
+  }
+
+  user.description = description;
+
+  try {
+    await user.save();
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not update description.',
+      500
+    );
+    return next(error);
+  }
+
+  res.status(200).json({
+    message: 'Description updated successfully',
+    username: user.username,
+  });
 };
