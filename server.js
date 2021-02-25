@@ -32,7 +32,7 @@ app.use((error, req, res, next) => {
 
 mongoose
   .connect(
-    `mongodb+srv://mvjl000:${process.env.DB_PASSWORD}@socnet-db.2iozq.mongodb.net/socnetdb?retryWrites=true&w=majority`
+    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@socnet-db.2iozq.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
   )
   .then(() => {
     app.listen(8080);
