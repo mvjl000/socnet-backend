@@ -163,3 +163,19 @@ exports.updateDescription = async (req, res, next) => {
     username: user.username,
   });
 };
+
+exports.deleteUser = async (req, res, next) => {
+  const userId = req.params.uid;
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (err) {
+    const error = new HttpError('Could not delete user, try again later.', 500);
+    return next(error);
+  }
+
+  user.remove();
+
+  res.status(200).json({ message: 'User deleted' });
+};
