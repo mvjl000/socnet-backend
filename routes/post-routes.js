@@ -6,7 +6,9 @@ const postControllers = require('../controllers/post-controllers');
 
 const router = express.Router();
 
-router.use(checkAuth);
+// router.use(checkAuth);
+
+router.get('/getUserPosts/:username', postControllers.getUserPosts);
 
 router.post('/createPost', postControllers.createPost);
 
