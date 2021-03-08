@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const userRoutes = require('./routes/user-routes');
+const postRoutes = require('./routes/post-routes');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/user', userRoutes);
+app.use('/api/posts', postRoutes);
 
 app.use((error, req, res, next) => {
   res.status(error.code || 500);
