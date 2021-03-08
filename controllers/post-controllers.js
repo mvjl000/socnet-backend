@@ -1,3 +1,4 @@
+const Place = require('../models/post-model');
 const HttpError = require('../models/http-error');
 
 exports.createPost = (req, res, next) => {
