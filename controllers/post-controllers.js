@@ -2,6 +2,21 @@ const Post = require('../models/post-model');
 // const User = require('../models/user-model');
 const HttpError = require('../models/http-error');
 
+exports.getAllPosts = async (req, res, next) => {
+  let posts;
+  try {
+    posts = await Post.find();
+  } catch (err) {
+    const error = new HttpError(
+      'Could not find posts due to server error. Please try again later.',
+      500
+    );
+    return next(error);
+  }
+
+  res.json({ posts });
+};
+
 exports.getUserPosts = async (req, res, next) => {
   const username = req.params.username;
 
