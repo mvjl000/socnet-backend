@@ -52,3 +52,34 @@ exports.createPost = async (req, res, next) => {
 
   res.status(201).json({ post: createdPost });
 };
+
+exports.deletePost = async (req, res, next) => {
+  const { postId } = req.params;
+
+  let post;
+  try {
+    post = await Post.findById(postId);
+  } catch (err) {
+    const error = new HttpError(
+      'Could not find posts due to server error. Please try again later.',
+      500
+    );
+    return next(error);
+  }
+  if (!post) {
+    const error = new HttpError('Could not find post with provided id.', 404);
+    return next(error);
+  }
+
+  try {
+    await post.remove();
+  } catch (err) {
+    const error = new HttpError(
+      'Could not delete post due to server error. Please try again later.',
+      500
+    );
+    return next(error);
+  }
+
+  res.json({ message: 'Post deleted succesfully' });
+};

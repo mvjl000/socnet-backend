@@ -14,4 +14,6 @@ router.get('/getUserPosts/:username', postControllers.getUserPosts);
 
 router.post('/createPost', postControllers.createPost);
 
+router.delete('/deletePost/:postId', postControllers.deletePost);
+
 module.exports = router;
