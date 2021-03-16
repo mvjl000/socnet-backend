@@ -51,7 +51,7 @@ exports.login = async (req, res, next) => {
   let token;
   try {
     token = jwt.sign(
-      { userId: createdUser._id, username: createdUser.username },
+      { userId: existingUser._id, username: existingUser.username },
       process.env.JWT_KEY,
       { expiresIn: '1h' }
     );
@@ -63,7 +63,7 @@ exports.login = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ username, token });
+  res.json({ username, userId: existingUser._id, token });
 };
 
 exports.signup = async (req, res, next) => {
