@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
@@ -46,11 +48,22 @@ exports.login = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({
-    message: 'Loggin in',
-    username: username,
-    userId: existingUser.id,
-  });
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: createdUser._id, username: createdUser.username },
+      process.env.JWT_KEY,
+      { expiresIn: '1h' }
+    );
+  } catch (err) {
+    const error = new HttpError(
+      'Failed to login. Please try again later.',
+      500
+    );
+    return next(error);
+  }
+
+  res.json({ username, token });
 };
 
 exports.signup = async (req, res, next) => {
@@ -107,7 +120,22 @@ exports.signup = async (req, res, next) => {
     return next(error);
   }
 
-  res.status(201).json({ message: 'user created successfully', username });
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: createdUser._id, username: createdUser.username },
+      process.env.JWT_KEY,
+      { expiresIn: '1h' }
+    );
+  } catch (err) {
+    const error = new HttpError(
+      'Failed to create user. Please try again later.',
+      500
+    );
+    return next(error);
+  }
+
+  res.status(201).json({ username: createdUser.username, token });
 };
 
 exports.getUserData = async (req, res, next) => {
