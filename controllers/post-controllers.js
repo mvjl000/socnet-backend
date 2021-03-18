@@ -1,5 +1,5 @@
 const Post = require('../models/post-model');
-// const User = require('../models/user-model');
+const User = require('../models/user-model');
 const HttpError = require('../models/http-error');
 
 exports.getAllPosts = async (req, res, next) => {
@@ -41,11 +41,29 @@ exports.createPost = async (req, res, next) => {
     title,
     content,
     creatorId: req.userData.userId,
-    creator: req.userData.username,
+    creatorName: req.userData.username,
   });
 
+  let user;
   try {
-    await createdPost.save();
+    user = await User.findById(req.userData.userId);
+  } catch (err) {
+    const error = new HttpError('Creating post failed, please try again.', 500);
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new HttpError('Could not find user for provided id.', 404);
+    return next(error);
+  }
+
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await createdPost.save({ session: sess });
+    user.posts.push(createdPost);
+    await user.save({ session: sess });
+    await sess.commitTransaction();
   } catch (err) {
     const error = new HttpError('Creating post failed, please try again.', 500);
     return next(error);

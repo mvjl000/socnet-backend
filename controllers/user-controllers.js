@@ -108,6 +108,7 @@ exports.signup = async (req, res, next) => {
     username,
     password: hashedPassword,
     description: 'Here you can write something about you.',
+    posts: [],
   });
 
   try {
