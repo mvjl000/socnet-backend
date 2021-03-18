@@ -77,10 +77,10 @@ exports.deletePost = async (req, res, next) => {
 
   let post;
   try {
-    post = await Post.findById(postId);
+    post = await Post.findById(postId).populate('creatorId');
   } catch (err) {
     const error = new HttpError(
-      'Could not find posts due to server error. Please try again later.',
+      'Something went wrong, could not delete place. Please try again later.',
       500
     );
     return next(error);
@@ -98,16 +98,20 @@ exports.deletePost = async (req, res, next) => {
     return next(error);
   }
 
-  if (post)
-    try {
-      await post.remove();
-    } catch (err) {
-      const error = new HttpError(
-        'Could not delete post due to server error. Please try again later.',
-        500
-      );
-      return next(error);
-    }
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await post.remove({ session: sess });
+    post.creatorId.posts.pull(post);
+    await post.creatorId.save({ session: sess });
+    await sess.commitTransaction();
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not delete post.',
+      500
+    );
+    return next(error);
+  }
 
   res.json({ message: 'Post deleted succesfully' });
 };
