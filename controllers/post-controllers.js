@@ -33,7 +33,7 @@ exports.getUserPosts = async (req, res, next) => {
     return next(error);
   }
 
-  if (!userWithPosts || userWithPosts.posts.length === 0) {
+  if (!userWithPosts) {
     return next(
       new HttpError('Could not find places for the provided user id.', 404)
     );
