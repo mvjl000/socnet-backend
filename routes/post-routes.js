@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get('/getAllPosts', postControllers.getAllPosts);
 
-router.get('/getUserPosts/:username', postControllers.getUserPosts);
+router.get('/getUserPosts/:uid', postControllers.getUserPosts);
 
 router.use(checkAuth);
 

@@ -20,20 +20,26 @@ exports.getAllPosts = async (req, res, next) => {
 };
 
 exports.getUserPosts = async (req, res, next) => {
-  const username = req.params.username;
+  const userId = req.params.uid;
 
-  let posts;
+  let userWithPosts;
   try {
-    posts = await Post.find({ creator: username });
+    userWithPosts = await User.findById(userId).populate('posts');
   } catch (err) {
     const error = new HttpError(
-      'Could not find user with provided username.',
-      404
+      'Fetching posts failed, please try again later.',
+      500
     );
     return next(error);
   }
 
-  res.json({ posts });
+  if (!userWithPosts || userWithPosts.posts.length === 0) {
+    return next(
+      new HttpError('Could not find places for the provided user id.', 404)
+    );
+  }
+
+  res.json({ posts: userWithPosts.posts });
 };
 
 exports.createPost = async (req, res, next) => {
