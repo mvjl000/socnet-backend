@@ -35,13 +35,13 @@ exports.getUserPosts = async (req, res, next) => {
 };
 
 exports.createPost = async (req, res, next) => {
-  const { title, content, creatorId, creator } = req.body;
+  const { title, content } = req.body;
 
   const createdPost = new Post({
     title,
     content,
-    creatorId,
-    creator,
+    creatorId: req.userData.userId,
+    creator: req.userData.username,
   });
 
   try {
