@@ -12,8 +12,8 @@ router.post('/login', userControllers.login);
 router.post(
   '/signup',
   [
-    check('username').trim().isLength({ min: 3 }),
-    check('password').trim().isLength({ min: 5 }),
+    check('username').trim().isLength({ min: 3, max: 20 }),
+    check('password').trim().isLength({ min: 5, max: 20 }),
     check('repeatPassword').custom((value, { req }) => {
       if (value !== req.body.password) {
         throw new Error('Password confirmation does not match password');
