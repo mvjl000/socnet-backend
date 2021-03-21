@@ -86,13 +86,7 @@ exports.createPost = async (req, res, next) => {
   }
 
   res.status(201).json({
-    post: {
-      title: createdPost.title,
-      content: createdPost.content,
-      creatorName: createdPost.creatorName,
-      _id: createdPost._id,
-      creationDate: createdPost.creationDate,
-    },
+    post: createdPost,
   });
 };
 
