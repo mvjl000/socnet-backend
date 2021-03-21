@@ -45,11 +45,19 @@ exports.getUserPosts = async (req, res, next) => {
 exports.createPost = async (req, res, next) => {
   const { title, content } = req.body;
 
+  const today = new Date().toISOString().slice(0, 10);
+
+  const hours = new Date().getHours();
+  const minutes = new Date().getMinutes();
+
   const createdPost = new Post({
     title,
     content,
     creatorId: req.userData.userId,
     creatorName: req.userData.username,
+    creationDate: `${today} | ${hours}:${
+      minutes < 10 ? '0' + minutes.toString() : minutes
+    }`,
   });
 
   let user;
@@ -77,16 +85,15 @@ exports.createPost = async (req, res, next) => {
     return next(error);
   }
 
-  res
-    .status(201)
-    .json({
-      post: {
-        title: createdPost.title,
-        content: createdPost.content,
-        creatorName: this.createPost.creatorName,
-        _id: createdPost._id,
-      },
-    });
+  res.status(201).json({
+    post: {
+      title: createdPost.title,
+      content: createdPost.content,
+      creatorName: createdPost.creatorName,
+      _id: createdPost._id,
+      creationDate: createdPost.creationDate,
+    },
+  });
 };
 
 exports.deletePost = async (req, res, next) => {
