@@ -58,6 +58,7 @@ exports.createPost = async (req, res, next) => {
     creationDate: `${today} | ${hours}:${
       minutes < 10 ? '0' + minutes.toString() : minutes
     }`,
+    edited: false,
   });
 
   let user;
@@ -155,6 +156,7 @@ exports.editPost = async (req, res, next) => {
   }
 
   post.content = content;
+  post.edited = true;
 
   try {
     await post.save();
