@@ -133,3 +133,38 @@ exports.deletePost = async (req, res, next) => {
 
   res.json({ message: 'Post deleted succesfully' });
 };
+
+exports.editPost = async (req, res, next) => {
+  const { content } = req.body;
+  const { postId } = req.params;
+
+  let post;
+  try {
+    post = await Post.findById(postId);
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not find post.',
+      500
+    );
+    return next(error);
+  }
+
+  if (post.creatorId.toString() !== req.userData.userId) {
+    const error = new HttpError('You are not allowed to edit this post.', 401);
+    return next(error);
+  }
+
+  post.content = content;
+
+  try {
+    await post.save();
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not edit post',
+      500
+    );
+    return next(error);
+  }
+
+  res.json({ content: post.content });
+};

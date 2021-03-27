@@ -14,6 +14,8 @@ router.use(checkAuth);
 
 router.post('/createPost', postControllers.createPost);
 
+router.patch('/editPost/:postId', postControllers.editPost);
+
 router.delete('/deletePost/:postId', postControllers.deletePost);
 
 module.exports = router;
