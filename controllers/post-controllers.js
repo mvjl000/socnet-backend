@@ -20,11 +20,11 @@ exports.getAllPosts = async (req, res, next) => {
 };
 
 exports.getUserPosts = async (req, res, next) => {
-  const userId = req.params.uid;
+  const username = req.params.uname;
 
   let userWithPosts;
   try {
-    userWithPosts = await User.findById(userId).populate('posts');
+    userWithPosts = await User.findOne({ username }).populate('posts');
   } catch (err) {
     const error = new HttpError(
       'Fetching posts failed, please try again later.',

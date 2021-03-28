@@ -140,11 +140,11 @@ exports.signup = async (req, res, next) => {
 };
 
 exports.getUserData = async (req, res, next) => {
-  const userId = req.params.uid;
+  const username = req.params.uname;
 
   let user;
   try {
-    user = await User.findById(userId);
+    user = await User.findOne({ username });
   } catch (err) {
     const error = new HttpError(
       'Something went wrong, please try again later.',

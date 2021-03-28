@@ -5,7 +5,7 @@ const userControllers = require('../controllers/user-controllers');
 
 const router = express.Router();
 
-router.get('/getUserData/:uid', userControllers.getUserData);
+router.get('/getUserData/:uname', userControllers.getUserData);
 
 router.post('/login', userControllers.login);
 
