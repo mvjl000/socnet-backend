@@ -24,7 +24,11 @@ router.post(
   userControllers.signup
 );
 
-router.patch('/updateDesc/:uid', userControllers.updateDescription);
+router.patch(
+  '/updateDesc/:uid',
+  [check('description').trim().isLength({ min: 1, max: 1000 })],
+  userControllers.updateDescription
+);
 
 router.delete('/delete/:uid', userControllers.deleteUser);
 

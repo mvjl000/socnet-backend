@@ -162,6 +162,16 @@ exports.getUserData = async (req, res, next) => {
 };
 
 exports.updateDescription = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError(
+        'Description needs to be between 1 and 1000 characters!',
+        422
+      )
+    );
+  }
+
   const { description } = req.body;
   const userId = req.params.uid;
 
