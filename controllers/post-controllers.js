@@ -43,6 +43,11 @@ exports.getUserPosts = async (req, res, next) => {
 };
 
 exports.createPost = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new HttpError('Post fields are too long, or too short.', 422));
+  }
+
   const { title, content } = req.body;
 
   const today = new Date().toISOString().slice(0, 10);

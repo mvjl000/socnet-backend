@@ -1,5 +1,5 @@
 const express = require('express');
-// const { check } = require('express-validator');
+const { check } = require('express-validator');
 
 const checkAuth = require('../middleware/check-auth');
 const postControllers = require('../controllers/post-controllers');
@@ -12,7 +12,14 @@ router.get('/getUserPosts/:uname', postControllers.getUserPosts);
 
 router.use(checkAuth);
 
-router.post('/createPost', postControllers.createPost);
+router.post(
+  '/createPost',
+  [
+    check('title').trim().isLength({ max: 100 }),
+    check('content').trim().isLength({ min: 3, max: 2000 }),
+  ],
+  postControllers.createPost
+);
 
 router.patch('/editPost/:postId', postControllers.editPost);
 
