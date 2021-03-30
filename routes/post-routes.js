@@ -21,6 +21,8 @@ router.post(
   postControllers.createPost
 );
 
+router.post('/likeAction', postControllers.likeAction);
+
 router.patch('/editPost/:postId', postControllers.editPost);
 
 router.delete('/deletePost/:postId', postControllers.deletePost);
