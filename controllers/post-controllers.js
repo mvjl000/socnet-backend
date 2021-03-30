@@ -181,6 +181,19 @@ exports.editPost = async (req, res, next) => {
 exports.likeAction = async (req, res, next) => {
   const { action_type, postId } = req.body;
 
+  let user;
+  try {
+    user = await User.findById(req.userData.userId);
+  } catch (err) {
+    const error = new HttpError('Could not proceed like action.', 500);
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new HttpError('Could not find user for provided id.', 404);
+    return next(error);
+  }
+
   let post;
   try {
     post = await Post.findById(postId);
@@ -209,6 +222,7 @@ exports.likeAction = async (req, res, next) => {
   }
 
   res.json({
+    user,
     post,
   });
 };
