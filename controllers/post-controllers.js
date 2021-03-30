@@ -206,20 +206,28 @@ exports.likeAction = async (req, res, next) => {
   }
 
   if (action_type === 'LIKE') {
-    post.likesCount++;
-    try {
-      const sess = await mongoose.startSession();
-      sess.startTransaction();
-      await post.save({ session: sess });
-      user.likedPosts.push(post);
-      await user.save({ session: sess });
-      await sess.commitTransaction();
-    } catch (err) {
-      const error = new HttpError(
-        'Something went wrong, could not save post likes value.',
-        500
-      );
+    const isPostAlreadyLiked = user.likedPosts.find(
+      (post) => post._id.toString() === postId
+    );
+    if (isPostAlreadyLiked) {
+      const error = new HttpError('This post is already liked by you.', 409);
       return next(error);
+    } else {
+      post.likesCount++;
+      try {
+        const sess = await mongoose.startSession();
+        sess.startTransaction();
+        await post.save({ session: sess });
+        user.likedPosts.push(post);
+        await user.save({ session: sess });
+        await sess.commitTransaction();
+      } catch (err) {
+        const error = new HttpError(
+          'Something went wrong, could not save post likes value.',
+          500
+        );
+        return next(error);
+      }
     }
   } else if (action_type === 'DISLIKE') {
     post.likesCount--;
