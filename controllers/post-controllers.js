@@ -65,6 +65,7 @@ exports.createPost = async (req, res, next) => {
       minutes < 10 ? '0' + minutes.toString() : minutes
     }`,
     edited: false,
+    likes_count: 0,
   });
 
   let user;
