@@ -205,20 +205,24 @@ exports.likeAction = async (req, res, next) => {
     return next(error);
   }
 
-  if (action_type === 'like') {
+  if (action_type === 'LIKE') {
     post.likesCount++;
-  } else if (action_type === 'dislike') {
+    try {
+      const sess = await mongoose.startSession();
+      sess.startTransaction();
+      await post.save({ session: sess });
+      user.likedPosts.push(post);
+      await user.save({ session: sess });
+      await sess.commitTransaction();
+    } catch (err) {
+      const error = new HttpError(
+        'Something went wrong, could not save post likes value.',
+        500
+      );
+      return next(error);
+    }
+  } else if (action_type === 'DISLIKE') {
     post.likesCount--;
-  }
-
-  try {
-    await post.save();
-  } catch (err) {
-    const error = new HttpError(
-      'Something went wrong, could not save post likes value.',
-      500
-    );
-    return next(error);
   }
 
   res.json({
