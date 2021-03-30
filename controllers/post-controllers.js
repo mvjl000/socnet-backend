@@ -65,7 +65,7 @@ exports.createPost = async (req, res, next) => {
       minutes < 10 ? '0' + minutes.toString() : minutes
     }`,
     edited: false,
-    likes_count: 0,
+    likesCount: 0,
   });
 
   let user;
@@ -193,9 +193,9 @@ exports.likeAction = async (req, res, next) => {
   }
 
   if (action_type === 'like') {
-    post.likes_count++;
+    post.likesCount++;
   } else if (action_type === 'dislike') {
-    post.likes_count--;
+    post.likesCount--;
   }
 
   try {
