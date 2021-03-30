@@ -9,6 +9,7 @@ const postSchema = new Schema({
   creatorName: { type: String, required: true },
   creationDate: { type: String, required: true },
   edited: { type: Boolean, required: true },
+  likes_count: { type: Number, required: true },
 });
 
 module.exports = mongoose.model('Post', postSchema);
