@@ -177,3 +177,38 @@ exports.editPost = async (req, res, next) => {
 
   res.json({ content: post.content });
 };
+
+exports.likeAction = async (req, res, next) => {
+  const { action_type, postId } = req.body;
+
+  let post;
+  try {
+    post = await Post.findById(postId);
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not find post.',
+      500
+    );
+    return next(error);
+  }
+
+  if (action_type === 'like') {
+    post.likes_count++;
+  } else if (action_type === 'dislike') {
+    post.likes_count--;
+  }
+
+  try {
+    await post.save();
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not save post likes value.',
+      500
+    );
+    return next(error);
+  }
+
+  res.json({
+    post,
+  });
+};
