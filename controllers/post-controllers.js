@@ -157,6 +157,11 @@ exports.editPost = async (req, res, next) => {
     return next(error);
   }
 
+  if (!post) {
+    const error = new HttpError('Could not find post with provided id.', 404);
+    return next(error);
+  }
+
   if (post.creatorId.toString() !== req.userData.userId) {
     const error = new HttpError('You are not allowed to edit this post.', 401);
     return next(error);
@@ -202,6 +207,11 @@ exports.likeAction = async (req, res, next) => {
       'Something went wrong, could not find post.',
       500
     );
+    return next(error);
+  }
+
+  if (!post) {
+    const error = new HttpError('Could not find post with provided id.', 404);
     return next(error);
   }
 
