@@ -185,20 +185,7 @@ exports.editPost = async (req, res, next) => {
 };
 
 exports.likeAction = async (req, res, next) => {
-  const { action_type, postId } = req.body;
-
-  let user;
-  try {
-    user = await User.findById(req.userData.userId);
-  } catch (err) {
-    const error = new HttpError('Could not proceed like action.', 500);
-    return next(error);
-  }
-
-  if (!user) {
-    const error = new HttpError('Could not find user for provided id.', 404);
-    return next(error);
-  }
+  const { actionType, postId } = req.body;
 
   let post;
   try {
@@ -216,9 +203,9 @@ exports.likeAction = async (req, res, next) => {
     return next(error);
   }
 
-  if (action_type === 'LIKE') {
-    const isPostAlreadyLiked = user.likedPosts.find(
-      (post) => post._id.toString() === postId
+  if (actionType === 'LIKE') {
+    const isPostAlreadyLiked = post.likedBy.find(
+      (userId) => userId.toString() === req.userData.userId
     );
 
     if (isPostAlreadyLiked) {
@@ -226,13 +213,9 @@ exports.likeAction = async (req, res, next) => {
       return next(error);
     } else {
       post.likesCount++;
+      post.likedBy.push(req.userData.userId);
       try {
-        const sess = await mongoose.startSession();
-        sess.startTransaction();
-        await post.save({ session: sess });
-        user.likedPosts.push(post);
-        await user.save({ session: sess });
-        await sess.commitTransaction();
+        await post.save();
       } catch (err) {
         const error = new HttpError(
           'Something went wrong, could not save post likes value.',
@@ -275,7 +258,6 @@ exports.likeAction = async (req, res, next) => {
   }
 
   res.json({
-    user,
     post,
   });
 };
