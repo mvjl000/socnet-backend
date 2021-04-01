@@ -203,12 +203,12 @@ exports.likeAction = async (req, res, next) => {
     return next(error);
   }
 
-  if (actionType === 'LIKE') {
-    const isPostAlreadyLiked = post.likedBy.find(
-      (userId) => userId.toString() === req.userData.userId
-    );
+  const isPostLikedByUser = post.likedBy.find(
+    (userId) => userId.toString() === req.userData.userId
+  );
 
-    if (isPostAlreadyLiked) {
+  if (actionType === 'LIKE') {
+    if (isPostLikedByUser) {
       const error = new HttpError('This post is already liked by you.', 409);
       return next(error);
     } else {
@@ -225,10 +225,6 @@ exports.likeAction = async (req, res, next) => {
       }
     }
   } else if (actionType === 'DISLIKE') {
-    const isPostLikedByUser = post.likedBy.find(
-      (userId) => userId.toString() === req.userData.userId
-    );
-
     if (isPostLikedByUser) {
       post.likesCount--;
       const updatedLikeUsers = post.likedBy.filter(
