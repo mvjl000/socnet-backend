@@ -66,6 +66,7 @@ exports.createPost = async (req, res, next) => {
     }`,
     edited: false,
     likesCount: 0,
+    likedBy: [],
   });
 
   let user;
