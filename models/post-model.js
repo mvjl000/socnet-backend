@@ -10,6 +10,7 @@ const postSchema = new Schema({
   creationDate: { type: String, required: true },
   edited: { type: Boolean, required: true },
   likesCount: { type: Number, required: true },
+  likedBy: [{ type: mongoose.Types.ObjectId, required: true, ref: 'User' }],
 });
 
 module.exports = mongoose.model('Post', postSchema);
