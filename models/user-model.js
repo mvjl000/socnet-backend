@@ -17,7 +17,6 @@ const userSchema = new Schema({
     type: String,
   },
   posts: [{ type: mongoose.Types.ObjectId, required: true, ref: 'Post' }],
-  likedPosts: [{ type: mongoose.Types.ObjectId, required: true, ref: 'Post' }],
 });
 
 module.exports = mongoose.model('User', userSchema);
