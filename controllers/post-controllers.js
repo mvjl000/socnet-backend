@@ -224,23 +224,19 @@ exports.likeAction = async (req, res, next) => {
         return next(error);
       }
     }
-  } else if (action_type === 'DISLIKE') {
-    const isPostLikedByUser = user.likedPosts.find(
-      (post) => post._id.toString() === postId
+  } else if (actionType === 'DISLIKE') {
+    const isPostLikedByUser = post.likedBy.find(
+      (userId) => userId.toString() === req.userData.userId
     );
 
     if (isPostLikedByUser) {
       post.likesCount--;
-      const updatedLikedPosts = user.likedPosts.filter(
-        (post) => post._id.toString() !== postId
+      const updatedLikeUsers = post.likedBy.filter(
+        (userId) => userId.toString() !== req.userData.userId
       );
+      post.likedBy = updatedLikeUsers;
       try {
-        const sess = await mongoose.startSession();
-        sess.startTransaction();
-        await post.save({ session: sess });
-        user.likedPosts = updatedLikedPosts;
-        await user.save({ session: sess });
-        await sess.commitTransaction();
+        await post.save();
       } catch (err) {
         const error = new HttpError(
           'Something went wrong, could not save post likes value.',
