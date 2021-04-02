@@ -188,6 +188,11 @@ exports.updateDescription = async (req, res, next) => {
     return next(error);
   }
 
+  if (!user) {
+    const error = new HttpError('Could not find user with provided id.', 404);
+    return next(error);
+  }
+
   user.description = description;
 
   try {
@@ -217,6 +222,11 @@ exports.deleteUser = async (req, res, next) => {
     return next(error);
   }
 
+  if (!user) {
+    const error = new HttpError('Could not find user with provided id.', 404);
+    return next(error);
+  }
+
   for (let i = 0; i < user.posts.length; i++) {
     const postId = user.posts[i].toString();
     let post;
@@ -235,4 +245,50 @@ exports.deleteUser = async (req, res, next) => {
   user.remove();
 
   res.status(200).json({ message: 'User deleted' });
+};
+
+exports.deletePosts = async (req, res, next) => {
+  const userId = req.params.uid;
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (err) {
+    const error = new HttpError('Could not delete user, try again later.', 500);
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new HttpError('Could not find user with provided id.', 404);
+    return next(error);
+  }
+
+  for (let i = 0; i < user.posts.length; i++) {
+    const postId = user.posts[i].toString();
+    let post;
+    try {
+      post = await Post.findById(postId);
+      await post.remove();
+    } catch (err) {
+      const error = new HttpError(
+        'Could not find post, please try again later.',
+        500
+      );
+      return next(error);
+    }
+  }
+
+  user.posts = [];
+
+  try {
+    await user.save();
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not delete posts.',
+      500
+    );
+    return next(error);
+  }
+
+  res.status(200).json({ message: 'Posts deleted' });
 };
