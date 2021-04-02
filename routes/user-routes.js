@@ -2,6 +2,7 @@ const express = require('express');
 const { check } = require('express-validator');
 
 const userControllers = require('../controllers/user-controllers');
+const checkAuth = require('../middleware/check-auth');
 
 const router = express.Router();
 
@@ -23,6 +24,8 @@ router.post(
   ],
   userControllers.signup
 );
+
+router.use(checkAuth);
 
 router.patch(
   '/updateDesc/:uid',
