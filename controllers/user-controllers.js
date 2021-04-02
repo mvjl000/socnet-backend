@@ -1,11 +1,13 @@
 require('dotenv').config();
 
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 
 const HttpError = require('../models/http-error');
 const User = require('../models/user-model');
+const Post = require('../models/post-model');
 
 exports.login = async (req, res, next) => {
   const { username, password } = req.body;
@@ -213,6 +215,21 @@ exports.deleteUser = async (req, res, next) => {
   } catch (err) {
     const error = new HttpError('Could not delete user, try again later.', 500);
     return next(error);
+  }
+
+  for (let i = 0; i < user.posts.length; i++) {
+    const postId = user.posts[i].toString();
+    let post;
+    try {
+      post = await Post.findById(postId);
+      await post.remove();
+    } catch (err) {
+      const error = new HttpError(
+        'Could not find post, please try again later.',
+        500
+      );
+      return next(error);
+    }
   }
 
   user.remove();
