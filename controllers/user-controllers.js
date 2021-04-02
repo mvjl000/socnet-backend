@@ -193,6 +193,14 @@ exports.updateDescription = async (req, res, next) => {
     return next(error);
   }
 
+  if (user._id.toString() !== req.userData.userId.toString()) {
+    const error = new HttpError(
+      'You are not allowed to edit description.',
+      401
+    );
+    return next(error);
+  }
+
   user.description = description;
 
   try {
@@ -224,6 +232,14 @@ exports.deleteUser = async (req, res, next) => {
 
   if (!user) {
     const error = new HttpError('Could not find user with provided id.', 404);
+    return next(error);
+  }
+
+  if (user._id.toString() !== req.userData.userId.toString()) {
+    const error = new HttpError(
+      'You are not allowed to edit description.',
+      401
+    );
     return next(error);
   }
 
@@ -260,6 +276,14 @@ exports.deletePosts = async (req, res, next) => {
 
   if (!user) {
     const error = new HttpError('Could not find user with provided id.', 404);
+    return next(error);
+  }
+
+  if (user._id.toString() !== req.userData.userId.toString()) {
+    const error = new HttpError(
+      'You are not allowed to edit description.',
+      401
+    );
     return next(error);
   }
 
