@@ -33,6 +33,8 @@ router.patch(
   userControllers.updateDescription
 );
 
+router.delete('/deletePosts/:uid', userControllers.deletePosts);
+
 router.delete('/delete/:uid', userControllers.deleteUser);
 
 module.exports = router;
