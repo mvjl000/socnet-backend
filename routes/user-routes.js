@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.get('/getUserData/:uname', userControllers.getUserData);
 
+router.post('/searchUsers', userControllers.searchUsers);
+
 router.post('/login', userControllers.login);
 
 router.post(
