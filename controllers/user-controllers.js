@@ -1,6 +1,5 @@
 require('dotenv').config();
 
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
@@ -161,6 +160,27 @@ exports.getUserData = async (req, res, next) => {
   }
 
   res.status(200).json({ description: user.description });
+};
+
+exports.searchUsers = async (req, res, next) => {
+  const { searchValue } = req.body;
+
+  let users;
+  try {
+    users = await User.find();
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, please try again later.',
+      500
+    );
+    return next(error);
+  }
+
+  const matchingUsers = users.filter((user) =>
+    user.username.includes(searchValue)
+  );
+
+  res.status(200).json({ users: matchingUsers.map((user) => user.username) });
 };
 
 exports.updateDescription = async (req, res, next) => {
