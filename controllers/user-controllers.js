@@ -177,7 +177,7 @@ exports.searchUsers = async (req, res, next) => {
   }
 
   const matchingUsers = users.filter((user) =>
-    user.username.includes(searchValue)
+    user.username.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   res.status(200).json({ users: matchingUsers.map((user) => user.username) });
