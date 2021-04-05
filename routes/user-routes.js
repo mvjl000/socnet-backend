@@ -10,6 +10,8 @@ router.get('/getUserData/:uname', userControllers.getUserData);
 
 router.post('/searchUsers', userControllers.searchUsers);
 
+router.get('/profilePictures', userControllers.profilePictures);
+
 router.post('/login', userControllers.login);
 
 router.post(
