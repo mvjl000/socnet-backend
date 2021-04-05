@@ -56,19 +56,6 @@ exports.createPost = async (req, res, next) => {
   const hours = new Date().getHours();
   const minutes = new Date().getMinutes();
 
-  const createdPost = new Post({
-    title,
-    content,
-    creatorId: req.userData.userId,
-    creatorName: req.userData.username,
-    creationDate: `${today} | ${hours}:${
-      minutes < 10 ? '0' + minutes.toString() : minutes
-    }`,
-    edited: false,
-    likesCount: 0,
-    likedBy: [],
-  });
-
   let user;
   try {
     user = await User.findById(req.userData.userId);
@@ -81,6 +68,20 @@ exports.createPost = async (req, res, next) => {
     const error = new HttpError('Could not find user for provided id.', 404);
     return next(error);
   }
+
+  const createdPost = new Post({
+    title,
+    content,
+    creatorId: req.userData.userId,
+    creatorName: req.userData.username,
+    creatorImage: user.image,
+    creationDate: `${today} | ${hours}:${
+      minutes < 10 ? '0' + minutes.toString() : minutes
+    }`,
+    edited: false,
+    likesCount: 0,
+    likedBy: [],
+  });
 
   try {
     const sess = await mongoose.startSession();
