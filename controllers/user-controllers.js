@@ -73,7 +73,7 @@ exports.signup = async (req, res, next) => {
     return next(new HttpError('Invalid credentials passed.', 422));
   }
 
-  const { username, password } = req.body;
+  const { username, password, image } = req.body;
 
   let existingUser;
   try {
@@ -110,6 +110,7 @@ exports.signup = async (req, res, next) => {
     password: hashedPassword,
     description: 'Here you can write something about you.',
     posts: [],
+    image,
   });
 
   try {
