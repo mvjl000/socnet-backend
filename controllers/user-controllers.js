@@ -147,7 +147,6 @@ exports.profilePictures = (req, res, next) => {
   let avaliableImages = [];
 
   const directoryPath = path.join(__dirname, '..', 'uploads', 'images');
-  console.log('>>>>>>>>>>', directoryPath);
 
   fs.readdirSync(directoryPath).forEach((file) => {
     avaliableImages.push(file);
