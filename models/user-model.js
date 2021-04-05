@@ -17,6 +17,7 @@ const userSchema = new Schema({
     type: String,
   },
   posts: [{ type: mongoose.Types.ObjectId, required: true, ref: 'Post' }],
+  image: { type: String, required: true },
 });
 
 module.exports = mongoose.model('User', userSchema);
