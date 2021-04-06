@@ -174,7 +174,7 @@ exports.getUserData = async (req, res, next) => {
     return next(error);
   }
 
-  res.status(200).json({ description: user.description });
+  res.status(200).json({ description: user.description, image: user.image });
 };
 
 exports.searchUsers = async (req, res, next) => {
