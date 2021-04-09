@@ -20,6 +20,27 @@ exports.getAllPosts = async (req, res, next) => {
   res.json({ posts });
 };
 
+exports.getPostById = async (req, res, next) => {
+  const { postId } = req.params;
+
+  let post;
+  try {
+    post = await Post.findById(postId);
+  } catch (err) {
+    const error = new HttpError(
+      'Could not find post due to server error. Please try again later.',
+      500
+    );
+    return next(error);
+  }
+
+  if (!post) {
+    return next(new HttpError('Could not find post for the provided id.', 404));
+  }
+
+  res.json({ post });
+};
+
 exports.getUserPosts = async (req, res, next) => {
   const username = req.params.uname;
 
@@ -36,7 +57,7 @@ exports.getUserPosts = async (req, res, next) => {
 
   if (!userWithPosts) {
     return next(
-      new HttpError('Could not find places for the provided user id.', 404)
+      new HttpError('Could not find posts for the provided user id.', 404)
     );
   }
 
