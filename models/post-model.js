@@ -23,6 +23,10 @@ const postSchema = new Schema({
         type: String,
         required: true,
       },
+      commentAuthorImage: {
+        type: String,
+        required: true,
+      },
       content: { type: String, required: true },
       commentDate: { type: String, required: true },
     },
