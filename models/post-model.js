@@ -31,6 +31,7 @@ const postSchema = new Schema({
       commentDate: { type: String, required: true },
     },
   ],
+  commentsCount: { type: Number, required: true },
 });
 
 module.exports = mongoose.model('Post', postSchema);

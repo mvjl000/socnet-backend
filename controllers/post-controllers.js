@@ -103,6 +103,7 @@ exports.createPost = async (req, res, next) => {
     likesCount: 0,
     likedBy: [],
     comments: [],
+    commentsCount: 0,
   });
 
   try {
@@ -325,6 +326,7 @@ exports.commentPost = async (req, res, next) => {
   };
 
   post.comments.push(newComment);
+  post.commentsCount++;
   try {
     await post.save();
   } catch (err) {
