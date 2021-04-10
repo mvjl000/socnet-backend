@@ -102,6 +102,7 @@ exports.createPost = async (req, res, next) => {
     edited: false,
     likesCount: 0,
     likedBy: [],
+    comments: [],
   });
 
   try {
@@ -274,4 +275,46 @@ exports.likeAction = async (req, res, next) => {
   res.json({
     post,
   });
+};
+
+exports.commentPost = async (req, res, next) => {
+  const { postId, content } = req.body;
+
+  let post;
+  try {
+    post = await Post.findById(postId);
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not find post.',
+      500
+    );
+    return next(error);
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  const hours = new Date().getHours();
+  const minutes = new Date().getMinutes();
+
+  const newComment = {
+    commentAuthorId: req.userData.userId,
+    commentAuthorName: req.userData.username,
+    content,
+    commentDate: `${today} | ${hours}:${
+      minutes < 10 ? '0' + minutes.toString() : minutes
+    }`,
+  };
+
+  post.comments.push(newComment);
+  try {
+    await post.save();
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not save post comments value.',
+      500
+    );
+    return next(error);
+  }
+
+  res.json({ message: 'Post commented', post });
 };
