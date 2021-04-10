@@ -131,7 +131,7 @@ exports.deletePost = async (req, res, next) => {
     post = await Post.findById(postId).populate('creatorId');
   } catch (err) {
     const error = new HttpError(
-      'Something went wrong, could not delete place. Please try again later.',
+      'Something went wrong, could not delete post. Please try again later.',
       500
     );
     return next(error);
@@ -338,6 +338,58 @@ exports.commentPost = async (req, res, next) => {
   }
 
   res.json({ comment: post.comments[post.comments.length - 1] });
+};
+
+exports.deleteComment = async (req, res, next) => {
+  const { postId, commentId } = req.params;
+
+  let post;
+  try {
+    post = await Post.findById(postId);
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not delete comment. Please try again later.',
+      500
+    );
+    return next(error);
+  }
+  if (!post) {
+    const error = new HttpError('Could not find post with provided id.', 404);
+    return next(error);
+  }
+
+  const commentToDelete = post.comments.find(
+    (comment) => comment._id.toString() === commentId
+  );
+
+  if (
+    commentToDelete.commentAuthorId.toString() !==
+    req.userData.userId.toString()
+  ) {
+    const error = new HttpError(
+      'You are not allowed to delete this comment.',
+      401
+    );
+    return next(error);
+  }
+
+  const newComments = post.comments.filter(
+    (comment) => comment._id.toString() !== commentId
+  );
+  post.comments = newComments;
+  post.commentsCount = post.commentsCount--;
+
+  try {
+    await post.save();
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not delete comment.',
+      500
+    );
+    return next(error);
+  }
+
+  res.json({ message: 'Comment deleted succesfully' });
 };
 
 exports.getPostComments = async (req, res, next) => {
