@@ -377,7 +377,7 @@ exports.deleteComment = async (req, res, next) => {
     (comment) => comment._id.toString() !== commentId
   );
   post.comments = newComments;
-  post.commentsCount = post.commentsCount--;
+  post.commentsCount = post.commentsCount - 1;
 
   try {
     await post.save();
