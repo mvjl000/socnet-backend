@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.get('/getAllPosts', postControllers.getAllPosts);
 
+router.get('/comments/:postId', postControllers.getPostComments);
+
 router.get('/post/:postId', postControllers.getPostById);
 
 router.get('/getUserPosts/:uname', postControllers.getUserPosts);
