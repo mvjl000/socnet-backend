@@ -296,6 +296,19 @@ exports.commentPost = async (req, res, next) => {
     return next(error);
   }
 
+  let user;
+  try {
+    user = await User.findById(req.userData.userId);
+  } catch (err) {
+    const error = new HttpError('Could not find user, please try again.', 500);
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new HttpError('Could not find user for provided id.', 404);
+    return next(error);
+  }
+
   const today = new Date().toISOString().slice(0, 10);
 
   const hours = new Date().getHours();
@@ -304,6 +317,7 @@ exports.commentPost = async (req, res, next) => {
   const newComment = {
     commentAuthorId: req.userData.userId,
     commentAuthorName: req.userData.username,
+    commentAuthorImage: user.image,
     content,
     commentDate: `${today} | ${hours}:${
       minutes < 10 ? '0' + minutes.toString() : minutes
@@ -321,7 +335,7 @@ exports.commentPost = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ message: 'Post commented', post });
+  res.json({ comment: post.comments[post.comments.length - 1] });
 };
 
 exports.getPostComments = async (req, res, next) => {
