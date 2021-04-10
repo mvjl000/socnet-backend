@@ -291,6 +291,11 @@ exports.commentPost = async (req, res, next) => {
     return next(error);
   }
 
+  if (!post) {
+    const error = new HttpError('Could not find post with provided id.', 404);
+    return next(error);
+  }
+
   const today = new Date().toISOString().slice(0, 10);
 
   const hours = new Date().getHours();
@@ -317,4 +322,26 @@ exports.commentPost = async (req, res, next) => {
   }
 
   res.json({ message: 'Post commented', post });
+};
+
+exports.getPostComments = async (req, res, next) => {
+  const { postId } = req.params;
+
+  let post;
+  try {
+    post = await Post.findById(postId);
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not find post.',
+      500
+    );
+    return next(error);
+  }
+
+  if (!post) {
+    const error = new HttpError('Could not find post with provided id.', 404);
+    return next(error);
+  }
+
+  res.json({ comments: post.comments });
 };
