@@ -12,6 +12,21 @@ const postSchema = new Schema({
   edited: { type: Boolean, required: true },
   likesCount: { type: Number, required: true },
   likedBy: [{ type: mongoose.Types.ObjectId, required: true, ref: 'User' }],
+  comments: [
+    {
+      commentAuthorId: {
+        type: mongoose.Types.ObjectId,
+        required: true,
+        ref: 'User',
+      },
+      commentAuthorName: {
+        type: String,
+        required: true,
+      },
+      content: { type: String, required: true },
+      commentDate: { type: String, required: true },
+    },
+  ],
 });
 
 module.exports = mongoose.model('Post', postSchema);
