@@ -425,7 +425,7 @@ exports.deleteComment = async (req, res, next) => {
 };
 
 exports.reportPost = async (req, res, next) => {
-  const { postId } = req.body;
+  const { postId, discardReport } = req.body;
 
   let post;
   try {
@@ -442,12 +442,26 @@ exports.reportPost = async (req, res, next) => {
     return next(error);
   }
 
-  if (post.isPostReported === true) {
+  if (
+    discardReport &&
+    process.env.ADMIN_ID.toString() === req.userData.userId.toString()
+  ) {
+    post.isPostReported = false;
+  } else if (
+    discardReport &&
+    process.env.ADMIN_ID.toString() !== req.userData.userId.toString()
+  ) {
+    const error = new HttpError(
+      'You are not allowed to see discard report.',
+      403
+    );
+    return next(error);
+  } else if (!discardReport) {
+    post.isPostReported = true;
+  } else if (post.isPostReported === true && !discardReport) {
     const error = new HttpError('Post is already reported', 418);
     return next(error);
   }
-
-  post.isPostReported = true;
 
   try {
     await post.save();
