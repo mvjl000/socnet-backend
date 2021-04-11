@@ -66,8 +66,6 @@ exports.getUserPosts = async (req, res, next) => {
 };
 
 exports.getReportedPosts = async (req, res, next) => {
-  console.log(process.env.ADMIN_ID);
-  console.log(typeof process.env.ADMIN_ID);
   if (process.env.ADMIN_ID.toString() !== req.userData.userId.toString()) {
     const error = new HttpError(
       'You are not allowed to see reported posts.',
