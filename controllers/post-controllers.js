@@ -7,15 +7,8 @@ const HttpError = require('../models/http-error');
 
 exports.getAllPosts = async (req, res, next) => {
   let posts;
-  const { page, perPage } = req.query;
-
-  const options = {
-    page: parseInt(page, 10) || 1,
-    limit: parseInt(perPage, 10) || 10,
-  };
-
   try {
-    posts = await Post.paginate({}, options);
+    posts = await Post.find();
   } catch (err) {
     const error = new HttpError(
       'Could not find posts due to server error. Please try again later.',
@@ -24,7 +17,7 @@ exports.getAllPosts = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ posts });
+  res.json({ posts: posts.reverse() });
 };
 
 exports.getPostById = async (req, res, next) => {
@@ -68,7 +61,7 @@ exports.getUserPosts = async (req, res, next) => {
     );
   }
 
-  res.json({ posts: userWithPosts.posts });
+  res.json({ posts: userWithPosts.posts.reverse() });
 };
 
 exports.createPost = async (req, res, next) => {
