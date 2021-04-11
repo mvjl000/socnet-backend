@@ -279,6 +279,13 @@ exports.likeAction = async (req, res, next) => {
 };
 
 exports.commentPost = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError('Comment needs to be betwen 1 and 500 characters.', 422)
+    );
+  }
+
   const { postId, content } = req.body;
 
   let post;

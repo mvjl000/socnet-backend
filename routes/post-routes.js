@@ -27,7 +27,11 @@ router.post(
 
 router.post('/likeAction', postControllers.likeAction);
 
-router.post('/comment', postControllers.commentPost);
+router.post(
+  '/comment',
+  [check('content').isLength({ min: 1, max: 500 })],
+  postControllers.commentPost
+);
 
 router.delete('/comment/:postId/:commentId', postControllers.deleteComment);
 
