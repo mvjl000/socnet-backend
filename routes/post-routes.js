@@ -16,6 +16,8 @@ router.get('/getUserPosts/:uname', postControllers.getUserPosts);
 
 router.use(checkAuth);
 
+router.post('/reportedPosts', postControllers.getReportedPosts);
+
 router.post(
   '/createPost',
   [
