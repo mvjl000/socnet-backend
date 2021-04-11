@@ -37,7 +37,7 @@ router.delete('/comment/:postId/:commentId', postControllers.deleteComment);
 
 router.patch('/editPost/:postId', postControllers.editPost);
 
-router.get('/post/report/:postId', postControllers.reportPost);
+router.post('/post/report', postControllers.reportPost);
 
 router.delete('/deletePost/:postId', postControllers.deletePost);
 
