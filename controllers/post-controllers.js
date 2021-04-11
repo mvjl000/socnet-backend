@@ -401,7 +401,7 @@ exports.deleteComment = async (req, res, next) => {
 };
 
 exports.reportPost = async (req, res, next) => {
-  const { postId } = req.body;
+  const { postId } = req.params;
 
   let post;
   try {
