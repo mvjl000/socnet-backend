@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
 
@@ -62,6 +63,31 @@ exports.getUserPosts = async (req, res, next) => {
   }
 
   res.json({ posts: userWithPosts.posts.reverse() });
+};
+
+exports.getReportedPosts = async (req, res, next) => {
+  console.log(process.env.ADMIN_ID);
+  console.log(typeof process.env.ADMIN_ID);
+  if (process.env.ADMIN_ID.toString() !== req.userData.userId.toString()) {
+    const error = new HttpError(
+      'You are not allowed to see reported posts.',
+      403
+    );
+    return next(error);
+  }
+
+  let posts;
+  try {
+    posts = await Post.find({ isPostReported: true });
+  } catch (err) {
+    const error = new HttpError(
+      'Could not find posts due to server error. Please try again later.',
+      500
+    );
+    return next(error);
+  }
+
+  res.json({ posts: posts.reverse() });
 };
 
 exports.createPost = async (req, res, next) => {
