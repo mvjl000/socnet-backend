@@ -166,7 +166,10 @@ exports.deletePost = async (req, res, next) => {
     return next(error);
   }
 
-  if (post.creatorId._id.toString() !== req.userData.userId.toString()) {
+  if (
+    post.creatorId._id.toString() !== req.userData.userId.toString() &&
+    req.userData.userId.toString() !== process.env.ADMIN_ID
+  ) {
     const error = new HttpError(
       'You are not allowed to delete this post.',
       401
