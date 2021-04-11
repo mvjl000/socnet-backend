@@ -7,8 +7,15 @@ const HttpError = require('../models/http-error');
 
 exports.getAllPosts = async (req, res, next) => {
   let posts;
+  const { page, perPage } = req.query;
+
+  const options = {
+    page: parseInt(page, 10) || 1,
+    limit: parseInt(perPage, 10) || 10,
+  };
+
   try {
-    posts = await Post.find();
+    posts = await Post.paginate({}, options);
   } catch (err) {
     const error = new HttpError(
       'Could not find posts due to server error. Please try again later.',

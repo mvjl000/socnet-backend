@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
 
 const Schema = mongoose.Schema;
 
@@ -33,5 +34,7 @@ const postSchema = new Schema({
   ],
   commentsCount: { type: Number, required: true },
 });
+
+postSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Post', postSchema);
