@@ -399,6 +399,44 @@ exports.deleteComment = async (req, res, next) => {
   res.json({ message: 'Comment deleted succesfully' });
 };
 
+exports.reportPost = async (req, res, next) => {
+  const { postId } = req.body;
+
+  let post;
+  try {
+    post = await Post.findById(postId);
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not report post. Please try again later.',
+      500
+    );
+    return next(error);
+  }
+  if (!post) {
+    const error = new HttpError('Could not find post with provided id.', 404);
+    return next(error);
+  }
+
+  if (post.isPostReported === true) {
+    const error = new HttpError('Post is already reported', 418);
+    return next(error);
+  }
+
+  post.isPostReported = true;
+
+  try {
+    await post.save();
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not report post.',
+      500
+    );
+    return next(error);
+  }
+
+  res.json({ message: 'Post reported' });
+};
+
 exports.getPostComments = async (req, res, next) => {
   const { postId } = req.params;
 
