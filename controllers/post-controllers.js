@@ -104,6 +104,7 @@ exports.createPost = async (req, res, next) => {
     likedBy: [],
     comments: [],
     commentsCount: 0,
+    isPostReported: false,
   });
 
   try {
