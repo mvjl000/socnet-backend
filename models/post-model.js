@@ -32,6 +32,7 @@ const postSchema = new Schema({
     },
   ],
   commentsCount: { type: Number, required: true },
+  isPostReported: { type: Boolean, required: true },
 });
 
 module.exports = mongoose.model('Post', postSchema);
