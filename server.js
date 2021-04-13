@@ -4,11 +4,14 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 
 const userRoutes = require('./routes/user-routes');
 const postRoutes = require('./routes/post-routes');
 
 const app = express();
+
+app.use(helmet());
 
 app.use(bodyParser.json());
 
@@ -45,6 +48,6 @@ mongoose
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@socnet-db.2iozq.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
   )
   .then(() => {
-    app.listen(8080);
+    app.listen(process.env.PORT || 8080);
   })
   .catch((err) => console.log(err));
