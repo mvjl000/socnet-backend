@@ -1,3 +1,4 @@
+// require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 
@@ -194,7 +195,12 @@ exports.searchUsers = async (req, res, next) => {
     user.username.toLowerCase().includes(searchValue.toLowerCase())
   );
 
-  res.status(200).json({ users: matchingUsers.map((user) => user.username) });
+  res.status(200).json({
+    users: matchingUsers.map((user) => ({
+      username: user.username,
+      userImage: user.image,
+    })),
+  });
 };
 
 exports.updateDescription = async (req, res, next) => {
